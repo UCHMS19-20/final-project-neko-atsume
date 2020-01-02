@@ -36,14 +36,13 @@ teachers = [
     Teachers('Mr. Raite', 'Pure Oxygen', 300, 'Common'),
     Teachers('Mr. Nowakoski', 'Fancy Knife', 8000, 'ULTRA RARE'),
     Teachers('Mr. McMenamin', 'Patrick Star Shorts', 7000, 'ULTRA RARE'),
-    Teachers('Dr. Jidarian', 'GAs', 400, 'Common'),
+    Teachers('Dr. Jidarian', "GA's", 400, 'Common'),
     Teachers('Ms. Valley', 'Deadlift', 200, 'Common'),
     Teachers('Ms. Pinto', '35 Notecards', 200, 'Common'),
     Teachers('Mrs. Kipp', 'AutoCAD Certificate', 8000, 'ULTRA RARE'),
     Teachers('Mrs. Wickerhauser', 'Lab Procedures', 200, 'Common'),
     Teachers('Mr. Moskowitz', 'Open Position', 600, 'Common')
 ]
-
 
 # Main loop for game
 while True:
