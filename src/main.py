@@ -1,6 +1,7 @@
 import sys
 import pygame
 
+
 #initialize pygame
 pygame.init()
 
@@ -17,8 +18,6 @@ screen.blit(background, backrect)
 #update screen with changes
 pygame.display.flip()
 
-#Defines a variable relating to retrieving information about which keys are being pressed.
-keys = pygame.key.get_pressed()
 
 # Create colors for text
 white = pygame.Color(255, 255, 255)
@@ -55,15 +54,20 @@ teachers = [
 def welcome():
     """Welcomes te player to the game and explains some commands"""
     #creates a text object for the welcome message
-    welcome_message = font.render('Welcome to Neko Atsume: Teacher Collector!', True, white)
+    welcome_message = font.render('Welcome to Sensei Atsume: Teacher Collector!', True, white)
     #Draws the text
     screen.blit(welcome_message, (730, 30))
     #creates a text object for commands list
-    commands = font.render('To open the shop: RIGHT ARROW KEY')
+    commands = font.render('To open the shop: RIGHT ARROW KEY', True, white)
     #draws the commands text
-    screen.blit(commands, (730, 50))
+    screen.blit(commands, (730, 80))
+    # Creates a text object for continuation
+    cont = font.render('To start the game, press space', True, white)
+    #draws the continuation text
+    screen.blit(cont, (730, 150))
     #updates the screen
     pygame.display.flip()
+    return
 
 # Sets base (initial) money value at 500. Currency is tears.
 tears = 0
@@ -83,10 +87,11 @@ shop = {
     'Open Position': 80
 }
 
-# Create text object
-shop_prompt = font.render('What would you like to purchase?', True, white)
+
 def open_shop():
     """Opens the shop and lists the items and the prices of the items available for purchase."""
+    # Create text object
+    shop_prompt = font.render('What would you like to purchase?', True, white)
     #Draw text
     screen.blit(shop_prompt, (710,50))
     #Update screen
@@ -103,7 +108,15 @@ def open_shop():
         pygame.display.flip()
         # Spaces out the shop items so they don't overlap
         y += 25
-
+    return
+#dictionary for the dimensions of a rectangle that clears the sidebar.
+sidebar = {
+    "x": 700,
+    "y": 0,
+    "height": 500,
+    "width": 450
+}
+#START OF GAME CODE
 
 # Main loop for game
 while True:
@@ -112,6 +125,11 @@ while True:
         if event.type == pygame.QUIT:
             #quit program if the event is quit
             sys.exit()
+    #Defines a variable relating to retrieving information about which keys are being pressed.
+    keys = pygame.key.get_pressed()
+    #draws over the sidebar if space button is clicked
+    if keys[pygame.K_SPACE]:
+        pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
     #Welcomes the player to the game and explains some commands.
     welcome()
     #if right arrow key is clicked, the shop opens.
