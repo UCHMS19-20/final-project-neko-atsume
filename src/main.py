@@ -9,14 +9,17 @@ pygame.init()
 screen = pygame.display.set_mode( (1150, 500) )
 print(pygame.QUIT)
 
-#create a background
-background = pygame.image.load("src/img/magnet-exterior.png")
-#define image size and location
-backrect = background.get_rect()
-#load image onto screen
-screen.blit(background, backrect)
-#update screen with changes
-pygame.display.flip()
+def draw_back():
+    """Draws a background for the game"""
+    #create a background
+    background = pygame.image.load("src/img/magnet-exterior.png")
+    #define image size and location
+    backrect = background.get_rect()
+    #load image onto screen
+    screen.blit(background, backrect)
+    #update screen with changes
+    pygame.display.flip()
+    return
 
 
 # Create colors for text
@@ -52,7 +55,7 @@ teachers = [
 ]
 
 def welcome():
-    """Welcomes te player to the game and explains some commands"""
+    """Welcomes the player to the game and explains some commands"""
     #creates a text object for the welcome message
     welcome_message = font.render('Welcome to Sensei Atsume: Teacher Collector!', True, white)
     #Draws the text
@@ -118,20 +121,29 @@ sidebar = {
 }
 #START OF GAME CODE
 
+scene = ''
 # Main loop for game
 while True:
+    #Defines a variable relating to retrieving information about which keys are being pressed.
+    keys = pygame.key.get_pressed()
+    #if right arrow key is clicked, the shop opens.
+    if keys[pygame.K_RIGHT]:
+        scene = 'shop'
+    #if space is pressed, the prompt screen clears text by drawing black over it
+    if keys[pygame.K_SPACE]:
+        scene = 'clear'
     for event in pygame.event.get():
         #check if current event is a quit event
         if event.type == pygame.QUIT:
             #quit program if the event is quit
             sys.exit()
-    #Defines a variable relating to retrieving information about which keys are being pressed.
-    keys = pygame.key.get_pressed()
-    #draws over the sidebar if space button is clicked
-    if keys[pygame.K_SPACE]:
-        pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
+    #draws background
+    draw_back()
     #Welcomes the player to the game and explains some commands.
-    welcome()
-    #if right arrow key is clicked, the shop opens.
-    if keys[pygame.K_RIGHT]:
+    if scene == '':
+        welcome()
+    if scene == 'shop':
         open_shop()
+    if scene == 'clear':
+        #draws over the sidebar
+        pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
