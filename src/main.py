@@ -21,7 +21,6 @@ def draw_back():
     pygame.display.flip()
     return
 
-
 # Create colors for text
 white = pygame.Color(255, 255, 255)
 black = pygame.Color(0, 0, 0)
@@ -93,13 +92,22 @@ shop = {
 
 def open_shop():
     """Opens the shop and lists the items and the prices of the items available for purchase."""
+    #defines y value for picker
+    y2 = 80
     # Create text object
     shop_prompt = font.render('What would you like to purchase?', True, white)
     #Draw text
-    screen.blit(shop_prompt, (710,50))
+    screen.blit(shop_prompt, (730,50))
+    # Create text object for the picker
+    picker = font.render('>', True, white)
+    # Draw picker text
+    screen.blit(picker, (710, y2))
     #Update screen
     pygame.display.flip()
-
+    #if you press the down arrow, the picker goes down one item
+    if keys[pygame.K_DOWN]:
+        y2 += 25
+        pygame.display.flip()
     #defines the y value of the shop text for the following for loop.
     y= 80
     # Create text object for shop
@@ -119,8 +127,8 @@ sidebar = {
     "height": 500,
     "width": 450
 }
-#START OF GAME CODE
 
+#START OF GAME CODE
 scene = ''
 # Main loop for game
 while True:
