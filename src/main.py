@@ -104,10 +104,6 @@ def open_shop():
     screen.blit(picker, (710, y2))
     #Update screen
     pygame.display.flip()
-    #if you press the down arrow, the picker goes down one item
-    if keys[pygame.K_DOWN]:
-        y2 += 25
-        pygame.display.flip()
     #defines the y value of the shop text for the following for loop.
     y= 80
     # Create text object for shop
@@ -119,6 +115,13 @@ def open_shop():
         pygame.display.flip()
         # Spaces out the shop items so they don't overlap
         y += 25
+        #if you press the down arrow, the picker goes down one item
+    if keys[pygame.K_DOWN]:
+        y2 += 25
+        screen.blit(picker, (710, y2))
+        #Update screen
+        pygame.display.flip()
+       
     return
 #dictionary for the dimensions of a rectangle that clears the sidebar.
 sidebar = {
