@@ -17,8 +17,8 @@ def draw_back():
     backrect = background.get_rect()
     #load image onto screen
     screen.blit(background, backrect)
-    #update screen with changes
-    pygame.display.flip()
+    #draws over the sidebar
+    pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
     return
 
 # Create colors for text
@@ -52,6 +52,32 @@ teachers = [
     Teachers('Mrs. Kipp', 'AutoCAD Certificate', 8000, 'ULTRA RARE'),
     Teachers('Mr. Moskowitz', 'Open Position', 600, 'Common')
 ]
+
+class Picker:
+   """Draw and move the picker in the shop""" 
+    # set default y value to 80
+    def __init__(self, index=0):
+        self.y = 80
+        self.index = index
+
+    # Draw the picker
+    def draw_self(self):
+        screen.blit(picker, (715, self.y))
+
+    # move picker down one option if not on last option
+    def next(self):
+        if self.y< 355:
+            self.y += 25
+            index += 1
+
+    # move picker up one option if not at top option
+    def prev(self):
+        if self.y>80:
+            self.y -= 25
+            index -= 1
+
+
+    
 
 def welcome():
     """Welcomes the player to the game and explains some commands"""
@@ -92,18 +118,11 @@ shop = {
 
 def open_shop():
     """Opens the shop and lists the items and the prices of the items available for purchase."""
-    #defines y value for picker
-    y2 = 80
     # Create text object
     shop_prompt = font.render('What would you like to purchase?', True, white)
     #Draw text
     screen.blit(shop_prompt, (730,50))
-    # Create text object for the picker
-    picker = font.render('>', True, white)
-    # Draw picker text
-    screen.blit(picker, (710, y2))
-    #Update screen
-    pygame.display.flip()
+
     #defines the y value of the shop text for the following for loop.
     y= 80
     # Create text object for shop
@@ -111,18 +130,18 @@ def open_shop():
         shop_list = font.render(f'{key}: {value}', True, white)
         #Draw text
         screen.blit(shop_list, (730, y))
-        # Update screen
-        pygame.display.flip()
         # Spaces out the shop items so they don't overlap
         y += 25
-        #if you press the down arrow, the picker goes down one item
+    #if you press the down arrow, the picker goes down one item
     if keys[pygame.K_DOWN]:
-        y2 += 25
-        screen.blit(picker, (710, y2))
-        #Update screen
-        pygame.display.flip()
-       
+        picker1.next()
+    #if you press up arrow, picker goes up one item
+    if keys[pygame.K_UP]:
+        picker1.prev()
+    #draw picker
+    picker1.draw_self()   
     return
+
 #dictionary for the dimensions of a rectangle that clears the sidebar.
 sidebar = {
     "x": 700,
@@ -130,6 +149,15 @@ sidebar = {
     "height": 500,
     "width": 450
 }
+
+picker = font.render('>', True, white)
+
+picker1=Picker()
+
+def purchase():
+    """Allows the player to purchase items in the shop"""
+    if keys[pygame.K_RETURN]:
+        chosen_item = #reference item in shop dictionary using the index defined by the picker class
 
 #START OF GAME CODE
 scene = ''
@@ -158,3 +186,4 @@ while True:
     if scene == 'clear':
         #draws over the sidebar
         pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
+    pygame.display.flip()
