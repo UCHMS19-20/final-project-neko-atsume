@@ -54,7 +54,7 @@ teachers = [
 ]
 
 class Picker:
-   """Draw and move the picker in the shop""" 
+    """Draw and move the picker in the shop""" 
     # set default y value to 80
     def __init__(self, index=0):
         self.y = 80
@@ -68,13 +68,13 @@ class Picker:
     def next(self):
         if self.y< 355:
             self.y += 25
-            index += 1
+            self.index += 1
 
     # move picker up one option if not at top option
     def prev(self):
         if self.y>80:
             self.y -= 25
-            index -= 1
+            self.index -= 1
 
 
     
@@ -157,7 +157,9 @@ picker1=Picker()
 def purchase():
     """Allows the player to purchase items in the shop"""
     if keys[pygame.K_RETURN]:
-        chosen_item = #reference item in shop dictionary using the index defined by the picker class
+        chosen_item = shop[picker1.index]
+        print(f'{chosen_item')
+         #reference item in shop dictionary using the index defined by the picker class
 
 #START OF GAME CODE
 scene = ''
