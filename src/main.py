@@ -2,12 +2,21 @@ import sys
 import pygame
 
 #NEXT set up money system, updating and displaying money, then set up trivia and the teachers appearing.
+# ALSO make sure to finish setting up the commands dictionary to display on welcome screen like the shop items.
 #initialize pygame
 pygame.init()
 
 #create a display
 screen = pygame.display.set_mode( (1150, 500) )
 print(pygame.QUIT)
+
+
+# Create colors for text
+white = pygame.Color(255, 255, 255)
+black = pygame.Color(0, 0, 0)
+
+# Create font object
+font = pygame.font.SysFont("Arial", 20)
 
 def draw_back():
     """Draws a background for the game"""
@@ -21,12 +30,6 @@ def draw_back():
     pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
     return
 
-# Create colors for text
-white = pygame.Color(255, 255, 255)
-black = pygame.Color(0, 0, 0)
-
-# Create font object
-font = pygame.font.SysFont("Arial", 20)
 
 class Teachers:
     """class of all collectable teachers"""
@@ -76,7 +79,7 @@ class Picker:
             self.y -= 25
             self.index -= 1
 
-
+commands = {'Open the shop:'}
 
 def welcome():
     """Welcomes the player to the game and explains some commands"""
@@ -96,8 +99,7 @@ def welcome():
     pygame.display.flip()
     return
 
-# Sets base (initial) money value at 500. Currency is tears.
-tears = 100
+
 # Establishes the shop as a dictionary. Lists name of item and cost.
 prices = {
     'Robot': 15,
@@ -154,24 +156,49 @@ picker = font.render('>', True, white)
 
 picker1=Picker()
 
+# Sets base (initial) money value at 500. Currency is tears.
+tears = 100
+
+#blank list to keep track of purchased items
+inventory = []
+
+
 def purchase():
     """Allows the player to purchase items in the shop"""
     #defines the item the player picked to line up with the index (height) of the picker
+    global tears
+    global run1
     chosen_item = for_sale[picker1.index]
-    if tears >= prices[chosen_item]:
-        # Display what item the player bought
-        purchase_complete = font.render(f'You have purchased {chosen_item}', True, white)
-        #Print purchase message
-        screen.blit(purchase_complete, (750, 100))
-    elif tears < prices[chosen_item]:
+    if tears < prices[chosen_item]:
         difference = prices[chosen_item] - tears
         broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
         screen.blit(broke, (750, 100))
+        return
+    elif run1 == True:
+        if tears >= prices[chosen_item]:
+            #update money 
+            tears -= prices[chosen_item]
+            # add bought item to your inventory
+            inventory.append(chosen_item)
+        run1 = False
+    # Display what item the player bought
+    purchase_complete = font.render(f'You have purchased {chosen_item}', True, white)
+    #Print purchase message
+    screen.blit(purchase_complete, (750, 100))
     return
     
+def display_money():
+    """Display the current amount of money"""
+    # Create text object for the money value
+    current_money = font.render(f'{tears} tears', True, white)
+    # draw text
+    screen.blit(current_money, (1050, 470))
+
 
 #START OF GAME CODE
 scene = ''
+
+
 # Main loop for game
 while True:
     #Defines a variable relating to retrieving information about which keys are being pressed.
@@ -179,9 +206,11 @@ while True:
     #if right arrow key is clicked, the shop opens.
     if keys[pygame.K_RIGHT]:
         scene = 'shop'
+        run1 = True
     #if space is pressed, the prompt screen clears text by drawing black over it
     if keys[pygame.K_SPACE]:
         scene = 'clear'
+    # Triggers the purchase screen after item is selected in the shop.
     if keys[pygame.K_RETURN] and scene == 'shop':
         scene = 'purchased'
     for event in pygame.event.get():
@@ -194,11 +223,17 @@ while True:
     #Welcomes the player to the game and explains some commands.
     if scene == '':
         welcome()
+    #Opens the shop for the player to browse.
     if scene == 'shop':
         open_shop()
+    # Activates purchase confirmation and updates money after something is bought.
     if scene == 'purchased':
         purchase()
+    # Clears the text box on the right.
     if scene == 'clear':
         #draws over the sidebar
         pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
+    # Keep track of and display the amount of money available
+    display_money()
+    # Update display
     pygame.display.flip()
