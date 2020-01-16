@@ -1,7 +1,7 @@
 import sys
 import pygame
 
-
+#NEXT set up money system, updating and displaying money, then set up trivia and the teachers appearing.
 #initialize pygame
 pygame.init()
 
@@ -24,7 +24,7 @@ def draw_back():
 # Create colors for text
 white = pygame.Color(255, 255, 255)
 black = pygame.Color(0, 0, 0)
-magenta = pygame.Color(250, 72, 233)
+
 # Create font object
 font = pygame.font.SysFont("Arial", 20)
 
@@ -77,7 +77,6 @@ class Picker:
             self.index -= 1
 
 
-    
 
 def welcome():
     """Welcomes the player to the game and explains some commands"""
@@ -98,9 +97,9 @@ def welcome():
     return
 
 # Sets base (initial) money value at 500. Currency is tears.
-tears = 0
+tears = 100
 # Establishes the shop as a dictionary. Lists name of item and cost.
-shop = {
+prices = {
     'Robot': 15,
     'Pop Quiz': 200,
     'Free-Body Diagram': 50,
@@ -115,6 +114,7 @@ shop = {
     'Open Position': 80
 }
 
+for_sale = ['Robot', 'Pop Quiz', 'Free-Body Diagram', 'Drum Set', 'AED', 'Pure Oxygen', 'Fancy Knife', 'Patrick Star Shorts', 'Deadlift', '35 Notecards', 'AutoCAD Certificate', 'Open Position']
 
 def open_shop():
     """Opens the shop and lists the items and the prices of the items available for purchase."""
@@ -126,7 +126,7 @@ def open_shop():
     #defines the y value of the shop text for the following for loop.
     y= 80
     # Create text object for shop
-    for key, value in shop.items():
+    for key, value in prices.items():
         shop_list = font.render(f'{key}: {value}', True, white)
         #Draw text
         screen.blit(shop_list, (730, y))
@@ -156,10 +156,19 @@ picker1=Picker()
 
 def purchase():
     """Allows the player to purchase items in the shop"""
-    if keys[pygame.K_RETURN]:
-        chosen_item = shop[picker1.index]
-        return
-         #reference item in shop dictionary using the index defined by the picker class
+    #defines the item the player picked to line up with the index (height) of the picker
+    chosen_item = for_sale[picker1.index]
+    if tears >= prices[chosen_item]:
+        # Display what item the player bought
+        purchase_complete = font.render(f'You have purchased {chosen_item}', True, white)
+        #Print purchase message
+        screen.blit(purchase_complete, (750, 100))
+    elif tears < prices[chosen_item]:
+        difference = prices[chosen_item] - tears
+        broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
+        screen.blit(broke, (750, 100))
+    return
+    
 
 #START OF GAME CODE
 scene = ''
@@ -173,6 +182,8 @@ while True:
     #if space is pressed, the prompt screen clears text by drawing black over it
     if keys[pygame.K_SPACE]:
         scene = 'clear'
+    if keys[pygame.K_RETURN] and scene == 'shop':
+        scene = 'purchased'
     for event in pygame.event.get():
         #check if current event is a quit event
         if event.type == pygame.QUIT:
@@ -185,6 +196,7 @@ while True:
         welcome()
     if scene == 'shop':
         open_shop()
+    if scene == 'purchased':
         purchase()
     if scene == 'clear':
         #draws over the sidebar
