@@ -158,7 +158,7 @@ def purchase():
     """Allows the player to purchase items in the shop"""
     if keys[pygame.K_RETURN]:
         chosen_item = shop[picker1.index]
-        print(f'{chosen_item')
+        return
          #reference item in shop dictionary using the index defined by the picker class
 
 #START OF GAME CODE
@@ -185,6 +185,7 @@ while True:
         welcome()
     if scene == 'shop':
         open_shop()
+        purchase()
     if scene == 'clear':
         #draws over the sidebar
         pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
