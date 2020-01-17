@@ -79,7 +79,7 @@ class Picker:
             self.y -= 25
             self.index -= 1
 
-commands = {'Open the shop:'}
+commands = {'Open the shop': 'RIGHT ARROW', 'Clear screen': 'SPACE', 'Confirm selection/purchase': 'ENTER', 'Browse options': 'UP and DOWN ARROWS'}
 
 def welcome():
     """Welcomes the player to the game and explains some commands"""
@@ -87,14 +87,17 @@ def welcome():
     welcome_message = font.render('Welcome to Sensei Atsume: Teacher Collector!', True, white)
     #Draws the text
     screen.blit(welcome_message, (730, 30))
-    #creates a text object for commands list
-    commands = font.render('To open the shop: RIGHT ARROW KEY', True, white)
-    #draws the commands text
-    screen.blit(commands, (730, 80))
+    # Set default height of commands list
+    y_cmnd = 70
+    for action, command in commands.items():
+        command_list = font.render(f'{action}: {command}', True, white)
+        screen.blit(command_list, (730, y_cmnd))
+        # Space out the commands listed vertically
+        y_cmnd += 25
     # Creates a text object for continuation
     cont = font.render('To start the game, press space', True, white)
     #draws the continuation text
-    screen.blit(cont, (730, 150))
+    screen.blit(cont, (730, 300))
     #updates the screen
     pygame.display.flip()
     return
@@ -169,13 +172,13 @@ def purchase():
     global tears
     global run1
     chosen_item = for_sale[picker1.index]
-    if tears < prices[chosen_item]:
-        difference = prices[chosen_item] - tears
-        broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
-        screen.blit(broke, (750, 100))
-        return
-    elif run1 == True:
-        if tears >= prices[chosen_item]:
+    if run1 == True:
+        if tears < prices[chosen_item]:
+            difference = prices[chosen_item] - tears
+            broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
+            screen.blit(broke, (750, 100))
+            return
+        elif tears >= prices[chosen_item]:
             #update money 
             tears -= prices[chosen_item]
             # add bought item to your inventory
@@ -193,6 +196,19 @@ def display_money():
     current_money = font.render(f'{tears} tears', True, white)
     # draw text
     screen.blit(current_money, (1050, 470))
+
+trivia_topics = {
+    '1': 'Science'
+    '2': 'History'
+}
+def trivia_game():
+    """Displays and initializes a trivia mini game for players to earn more money"""
+    global tears
+    trivia_directions = font.render('Answer questions to earn more tears!', True, white)
+    screen.blit(trivia_directions, (750, 50))
+    select_prompt = font.render('Pick your question.', True, white)
+    screen.blit(select_prompt, (750, 100))
+    return
 
 
 #START OF GAME CODE
@@ -213,6 +229,8 @@ while True:
     # Triggers the purchase screen after item is selected in the shop.
     if keys[pygame.K_RETURN] and scene == 'shop':
         scene = 'purchased'
+    if keys[pygame.K_t]:
+        scene = 'trivia'
     for event in pygame.event.get():
         #check if current event is a quit event
         if event.type == pygame.QUIT:
@@ -233,6 +251,8 @@ while True:
     if scene == 'clear':
         #draws over the sidebar
         pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
+    if scene == 'trivia':
+        trivia_game()
     # Keep track of and display the amount of money available
     display_money()
     # Update display
