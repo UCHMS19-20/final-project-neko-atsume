@@ -198,7 +198,7 @@ def display_money():
     screen.blit(current_money, (1050, 470))
 
 trivia_topics = {
-    '1': 'Science'
+    '1': 'Science',
     '2': 'History'
 }
 def trivia_game():
