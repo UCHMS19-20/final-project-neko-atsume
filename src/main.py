@@ -80,7 +80,7 @@ class Picker:
             self.y -= 25
             self.index -= 1
 
-commands = {'Open the shop': 'RIGHT ARROW', 'Clear screen': 'SPACE', 'Confirm selection/purchase': 'ENTER', 'Browse options': 'UP and DOWN ARROWS'}
+commands = {'Open the shop': 'RIGHT ARROW', 'Clear screen': 'SPACE', 'Confirm selection/purchase': 'ENTER', 'Browse options': 'UP and DOWN ARROWS', 'Open Trivia': 'T'}
 
 def welcome():
     """Welcomes the player to the game and explains some commands"""
@@ -212,7 +212,11 @@ def display_money():
 
 trivia_topics = {
     '1': 'Science',
-    '2': 'History'
+    '2': 'History',
+    '3': 'English',
+    '4': 'Technology',
+    '5': 'Health',
+    '6': 'Spanish'
 }
 def trivia_game():
     """Displays and initializes a trivia mini game for players to earn more money"""
@@ -221,6 +225,22 @@ def trivia_game():
     screen.blit(trivia_directions, (750, 50))
     select_prompt = font.render('Pick your question.', True, white)
     screen.blit(select_prompt, (750, 100))
+    y_triv = 150
+    for number, subject in trivia_topics.items():
+        trivia_options = font.render(f'{number}: {subject}', True, white)
+        screen.blit(trivia_options, (750, y_triv))
+        y_triv += 25
+    #if you press the down arrow, the picker goes down one item
+    if keys[pygame.K_DOWN]:
+        #reduces click sensitivity by slowing the time between key input and movement
+        pygame.time.wait(900)
+        picker1.next()
+    #if you press up arrow, picker goes up one item
+    if keys[pygame.K_UP]:
+        #reduces click sensitivity by slowing the time between key input and movement
+        pygame.time.wait(900)
+        picker1.prev()
+    picker1.draw_self()
     return
 
 
