@@ -59,7 +59,7 @@ teachers = [
 
 class Picker:
     """Draw and move the picker in the shop""" 
-    # set default y value to 80
+    
     def __init__(self, index=0):
         self.y = 80
         self.index = index
@@ -210,37 +210,54 @@ def display_money():
     # draw text
     screen.blit(current_money, (1050, 470))
 
+#dictionary of numbered trivia topics to choose from
 trivia_topics = {
     '1': 'Science',
     '2': 'History',
     '3': 'English',
     '4': 'Technology',
     '5': 'Health',
-    '6': 'Spanish'
+    '6': 'Math'
 }
+#dictionary of all the topics and their questions for trivia minigame
+trivia_questions = {
+    'Science': {'Easy': "What is Newton's Second Law?", 'Medium': "What is absolute zero in Celsius?", "Hard": 'Which of these is the Gibbs Free Energy equation?'},
+    'History': {'Easy': 'Which country was not in World War 1?', 'Medium': "Who was the first US president to be impeached?", 'Hard': 'Who was the 5th President of the United States?'},
+    'English': {"Easy": "Which of these was not written by Shakespeare?", "Medium": "Which of these was not written by Ernest Hemingway?", 'Hard': 'Who murdered Jay Gatsby in The Great Gatsby?'},
+    'Technology': {"Easy": 'What does RAM stand for?', "Medium": 'What type of line is used to indicate symmetry?', "Hard": 'Which is not a type of gear?'},
+    'Health': {'Easy': 'What does PPE stand for?', "Medium": "What's used to stop external bleeding?", "Hard": 'What is the depth of compression for infant CPR?'},
+    'Math': {"Easy": "What is the formula for a parabola?", "Medium": "What is 0/0?", "Hard": 'What is the integral of dx/x?'}
+}
+
 def trivia_game():
     """Displays and initializes a trivia mini game for players to earn more money"""
     global tears
     trivia_directions = font.render('Answer questions to earn more tears!', True, white)
     screen.blit(trivia_directions, (750, 50))
     select_prompt = font.render('Pick your question.', True, white)
-    screen.blit(select_prompt, (750, 100))
-    y_triv = 150
+    screen.blit(select_prompt, (750, 150))
+    y_triv = 200
     for number, subject in trivia_topics.items():
         trivia_options = font.render(f'{number}: {subject}', True, white)
         screen.blit(trivia_options, (750, y_triv))
         y_triv += 25
-    #if you press the down arrow, the picker goes down one item
-    if keys[pygame.K_DOWN]:
-        #reduces click sensitivity by slowing the time between key input and movement
-        pygame.time.wait(900)
-        picker1.next()
-    #if you press up arrow, picker goes up one item
-    if keys[pygame.K_UP]:
-        #reduces click sensitivity by slowing the time between key input and movement
-        pygame.time.wait(900)
-        picker1.prev()
-    picker1.draw_self()
+    pick_difficulty = font.render('Choose difficulty level: Easy (E), Medium (M), or Hard (H)', True, white)
+    screen.blit(pick_difficulty, (750, 80))
+    # set default difficulty to easy
+    difficulty = 'Easy'
+    if keys[pygame.K_e]:
+        difficulty = 'Easy'
+    elif keys[pygame.K_m]:
+        difficulty = 'Medium'
+    elif keys[pygame.K_h]:
+        difficulty = 'Hard'
+    chosen_question = ''
+    if keys[pygame.K_1]:
+        chosen_question = trivia_questions['Science'][difficulty]
+    if keys[pygame.K_2]:
+        chosen_question = trivia_questions['History'][difficulty]
+    question = font.render(chosen_question, True, white)
+    screen.blit(question, (750, 200))
     return
 
 
