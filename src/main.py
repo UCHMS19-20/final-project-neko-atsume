@@ -1,5 +1,6 @@
 import sys
 import pygame
+import time
 
 #NEXT set up money system, updating and displaying money, then set up trivia and the teachers appearing.
 # ALSO make sure to finish setting up the commands dictionary to display on welcome screen like the shop items.
@@ -119,11 +120,12 @@ prices = {
     'Open Position': 80
 }
 
+#List of items for sale, in order
 for_sale = ['Robot', 'Pop Quiz', 'Free-Body Diagram', 'Drum Set', 'AED', 'Pure Oxygen', 'Fancy Knife', 'Patrick Star Shorts', 'Deadlift', '35 Notecards', 'AutoCAD Certificate', 'Open Position']
 
 def open_shop():
     """Opens the shop and lists the items and the prices of the items available for purchase."""
-    # Create text object
+    # Ask player what they'd like to buy
     shop_prompt = font.render('What would you like to purchase?', True, white)
     #Draw text
     screen.blit(shop_prompt, (730,50))
@@ -139,9 +141,13 @@ def open_shop():
         y += 25
     #if you press the down arrow, the picker goes down one item
     if keys[pygame.K_DOWN]:
+        #reduces click sensitivity by slowing the time between key input and movement
+        pygame.time.wait(900)
         picker1.next()
     #if you press up arrow, picker goes up one item
     if keys[pygame.K_UP]:
+        #reduces click sensitivity by slowing the time between key input and movement
+        pygame.time.wait(900)
         picker1.prev()
     #draw picker
     picker1.draw_self()   
@@ -168,26 +174,33 @@ inventory = []
 
 def purchase():
     """Allows the player to purchase items in the shop"""
-    #defines the item the player picked to line up with the index (height) of the picker
     global tears
     global run1
+    #defines the item the player picked to line up with the index (height) of the picker
     chosen_item = for_sale[picker1.index]
-    if run1 == True:
+    #checks if chosen item has already been bought
+    if chosen_item in inventory and run1 == True:
+        already_have = font.render('You already have this item!', True, white)
+        screen.blit(already_have, (750, 100))
+
+    else:
         if tears < prices[chosen_item]:
+            #calculates how much more money you need to buy the item
             difference = prices[chosen_item] - tears
             broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
             screen.blit(broke, (750, 100))
             return
         elif tears >= prices[chosen_item]:
-            #update money 
-            tears -= prices[chosen_item]
-            # add bought item to your inventory
-            inventory.append(chosen_item)
+            if run1 == True:
+                #update money 
+                tears -= prices[chosen_item]
+                #add bought item to your inventory
+                inventory.append(chosen_item)
+        # Display what item the player bought
+        purchase_complete = font.render(f'You have purchased {chosen_item}', True, white)
+        #Print purchase message
+        screen.blit(purchase_complete, (750, 100))
         run1 = False
-    # Display what item the player bought
-    purchase_complete = font.render(f'You have purchased {chosen_item}', True, white)
-    #Print purchase message
-    screen.blit(purchase_complete, (750, 100))
     return
     
 def display_money():
