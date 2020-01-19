@@ -2,8 +2,8 @@ import sys
 import pygame
 import time
 
-#NEXT set up money system, updating and displaying money, then set up trivia and the teachers appearing.
-# ALSO make sure to finish setting up the commands dictionary to display on welcome screen like the shop items.
+#NEXT set up trivia and the teachers appearing.
+
 #initialize pygame
 pygame.init()
 
@@ -229,33 +229,75 @@ trivia_questions = {
     'Math': {"Easy": "What is the formula for a parabola?", "Medium": "What is 0/0?", "Hard": 'What is the integral of dx/x?'}
 }
 
-def trivia_game():
+def trivia_start():
     """Displays and initializes a trivia mini game for players to earn more money"""
-    global tears
+    global picked_yet
+    global difficulty
+    global sub_picked
+    global chosen_subject
     trivia_directions = font.render('Answer questions to earn more tears!', True, white)
     screen.blit(trivia_directions, (750, 50))
-    select_prompt = font.render('Pick your question.', True, white)
-    screen.blit(select_prompt, (750, 150))
     y_triv = 200
     for number, subject in trivia_topics.items():
         trivia_options = font.render(f'{number}: {subject}', True, white)
         screen.blit(trivia_options, (750, y_triv))
         y_triv += 25
-    pick_difficulty = font.render('Choose difficulty level: Easy (E), Medium (M), or Hard (H)', True, white)
-    screen.blit(pick_difficulty, (750, 80))
-    # set default difficulty to easy
-    difficulty = 'Easy'
-    if keys[pygame.K_e]:
-        difficulty = 'Easy'
-    elif keys[pygame.K_m]:
-        difficulty = 'Medium'
-    elif keys[pygame.K_h]:
-        difficulty = 'Hard'
-    chosen_question = ''
-    if keys[pygame.K_1]:
-        chosen_question = trivia_questions['Science'][difficulty]
-    if keys[pygame.K_2]:
-        chosen_question = trivia_questions['History'][difficulty]
+    
+    cont = font.render("Once you've chosen, press enter", True, white)
+    screen.blit(cont, (750, 400))
+    if picked_yet == False:
+        difficulty = ''
+        pick_difficulty = font.render('Choose difficulty level: Easy (E), Medium (M), or Hard (H)', True, white)
+        screen.blit(pick_difficulty, (750, 80))
+        if keys[pygame.K_e]:
+            difficulty = 'Easy'
+            picked_yet = True
+        elif keys[pygame.K_m]:
+            difficulty = 'Medium'
+            picked_yet = True
+        elif keys[pygame.K_h]:
+            difficulty = 'Hard'
+            picked_yet = True
+        if difficulty == '':
+            return
+    else:
+        chosen_difficulty = font.render(f'Difficulty Level: {difficulty}', True, white)
+        screen.blit(chosen_difficulty, (750, 80))
+
+    if sub_picked == False:
+        select_prompt = font.render('Pick your question.', True, white)
+        screen.blit(select_prompt, (750, 150))
+        chosen_subject = ''
+        if keys[pygame.K_1]:
+            chosen_subject = trivia_topics['1']
+            sub_picked = True
+        elif keys[pygame.K_2]:
+            chosen_subject = trivia_topics['2']
+            sub_picked = True
+        elif keys[pygame.K_3]:
+            chosen_subject = trivia_topics['3']
+            sub_picked = True
+        elif keys[pygame.K_4]:
+            chosen_subject = trivia_topics['4']
+            sub_picked = True
+        elif keys[pygame.K_5]:
+            chosen_subject = trivia_topics['5']
+            sub_picked = True
+        elif keys[pygame.K_6]:
+            chosen_subject = trivia_topics['6']
+            sub_picked = True
+        if chosen_subject == '':
+            return
+    else:
+        chosen_sub_text = font.render(f'You chose {chosen_subject}', True, white)
+        screen.blit(chosen_sub_text, (750, 150))
+    return
+
+def display_question():
+    """Display question and answer choices for trivia mini game"""
+    global difficulty
+    global chosen_subject
+    chosen_question = trivia_questions[chosen_subject][difficulty]
     question = font.render(chosen_question, True, white)
     screen.blit(question, (750, 200))
     return
@@ -279,8 +321,14 @@ while True:
     # Triggers the purchase screen after item is selected in the shop.
     if keys[pygame.K_RETURN] and scene == 'shop':
         scene = 'purchased'
+    # Opens the trivia minigame to earn more money
     if keys[pygame.K_t]:
-        scene = 'trivia'
+        scene = 'start trivia'
+        sub_picked = False
+        picked_yet = False
+    # Prints question and answers if a question is chosen from the trivia page
+    if keys[pygame.K_RETURN] and scene == 'start trivia':
+        scene = 'question'
     for event in pygame.event.get():
         #check if current event is a quit event
         if event.type == pygame.QUIT:
@@ -301,8 +349,12 @@ while True:
     if scene == 'clear':
         #draws over the sidebar
         pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
-    if scene == 'trivia':
-        trivia_game()
+    #starts trivia minigame
+    if scene == 'start trivia':
+        trivia_start()
+    #gives player the trivia question and answers
+    #if scene == 'question':
+        #display_question()
     # Keep track of and display the amount of money available
     display_money()
     # Update display
