@@ -226,11 +226,19 @@ trivia_questions = {
     'Math': {"Easy": "What is the formula for a parabola?", "Medium": "What is 0/0?", "Hard": 'What is the integral of dx/x?'}
 }
 
-#dictionary of answer choices for the trivia questions
+#dictionaries of answer choices for the trivia questions
 science_easy = {'A. Inertia': 'wrong', 'B. F=ma': 'correct', 'C. Equal/opposite forces': 'wrong', 'D. Conservation of energy': 'wrong'}
 science_med = {'A. 273': 'correct', 'B. 298': 'wrong', 'C. 225': 'wrong', 'D. 330': 'wrong'}
 science_hard = {'A. q=mcT': 'wrong', 'B. PV=nRT': 'wrong', 'C. v=dx/dt': 'wrong', 'D. G= H-TS': 'correct'}
-
+history_easy = {'A. USA': 'wrong', 'B. Germany': 'wrong', 'C. Spain': 'correct', 'D. Austro-Hungary': 'wrong'}
+history_med = {'A. Richard Nixon': 'wrong', 'B. Andrew Johnson': 'correct', 'C. Bill Clinton': 'wrong', 'Donald Trump': 'wrong'}
+history_hard = {'A. John Quincy Adams': 'wrong', 'B. James Madison': 'wrong', 'C. Martin Van Buren': 'wrong', 'D. James Monroe': 'correct'}
+health_easy = {'A. Personal Protective Equipment': 'correct', 'B. Private Protective Equipment': 'wrong', 'C. Private Political Endorsement': 'wrong', 'D. Pressure Point Equilibrium': 'wrong'}
+health_med = {'A. Ice': 'wrong', 'B. Tourniquet': 'correct', 'C. Splint': 'wrong', 'D. CPR': 'wrong'}
+health_hard = {'A. 2 inches': 'wrong', 'B. 1.5 inches': 'correct', 'C. 1 inch': 'wrong', 'D. As far as you can go': 'wrong'}
+math_easy = {'A. |x|': 'wrong', 'B. x': 'wrong', 'C. ln(x)': 'wrong', 'D. x^2': 'correct'}
+math_med = {'A. Undefined': 'wrong', 'B. Indeterminate': 'correct', 'C. 1': 'wrong', 'D. dx': 'wrong'}
+math_hard = {'A. 1/x': 'wrong', 'B. 1': 'wrong', 'C. e^x': 'wrong', 'D. ln(x)': 'correct'}
     
 
 def trivia_start():
@@ -322,6 +330,33 @@ def display_question():
     elif chosen_question == trivia_questions['Science']['Hard']:
         print_answers(science_hard)
         ans_dict = science_hard
+    elif chosen_question == trivia_questions['History']['Easy']:
+        print_answers(history_easy)
+        ans_dict = history_easy
+    elif chosen_question == trivia_questions['History']['Medium']:
+        print_answers(history_med)
+        ans_dict = history_med
+    elif chosen_question == trivia_questions['History']['Hard']:
+        print_answers(history_hard)
+        ans_dict = history_hard
+    elif chosen_question == trivia_questions['Health']['Easy']:
+        print_answers(health_easy)
+        ans_dict = health_easy
+    elif chosen_question == trivia_questions['Health']['Medium']:
+        print_answers(health_med)
+        ans_dict = health_med
+    elif chosen_question == trivia_questions['Health']['Hard']:
+        print_answers(health_hard)
+        ans_dict = health_hard
+    elif chosen_question == trivia_questions['Math']['Easy']:
+        print_answers(math_easy)
+        ans_dict = math_easy
+    elif chosen_question == trivia_questions['Math']['Medium']:
+        print_answers(math_med)
+        ans_dict = math_med
+    elif chosen_question == trivia_questions['Math']['Hard']:
+        print_answers(math_hard)
+        ans_dict = math_hard
     return ans_dict
 
 def your_answer():
