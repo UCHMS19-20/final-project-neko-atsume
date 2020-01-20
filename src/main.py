@@ -239,7 +239,7 @@ health_hard = {'A. 2 inches': 'wrong', 'B. 1.5 inches': 'correct', 'C. 1 inch': 
 math_easy = {'A. |x|': 'wrong', 'B. x': 'wrong', 'C. ln(x)': 'wrong', 'D. x^2': 'correct'}
 math_med = {'A. Undefined': 'wrong', 'B. Indeterminate': 'correct', 'C. 1': 'wrong', 'D. dx': 'wrong'}
 math_hard = {'A. 1/x': 'wrong', 'B. 1': 'wrong', 'C. e^x': 'wrong', 'D. ln(x)': 'correct'}
-    
+
 
 def trivia_start():
     """Displays and initializes a trivia mini game for players to earn more money"""
@@ -432,7 +432,7 @@ while True:
     #Defines a variable relating to retrieving information about which keys are being pressed.
     keys = pygame.key.get_pressed()
     #if right arrow key is clicked, the shop opens.
-    if keys[pygame.K_RIGHT] and scene == 'clear':
+    if keys[pygame.K_RIGHT]:
         scene = 'shop'
         run1 = True
     #if space is pressed, the prompt screen clears text by drawing black over it
@@ -442,7 +442,7 @@ while True:
     if keys[pygame.K_RETURN] and scene == 'shop':
         scene = 'purchased'
     # Opens the trivia minigame to earn more money
-    if keys[pygame.K_t] and scene == 'clear':
+    if keys[pygame.K_t]:
         scene = 'start trivia'
         sub_picked = False
         picked_yet = False
