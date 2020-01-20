@@ -184,23 +184,24 @@ def purchase():
         screen.blit(already_have, (750, 100))
 
     else:
-        if tears < prices[chosen_item]:
-            #calculates how much more money you need to buy the item
-            difference = prices[chosen_item] - tears
-            broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
-            screen.blit(broke, (750, 100))
-            return
-        elif tears >= prices[chosen_item]:
-            if run1 == True:
+        if run1 == True:
+            if tears < prices[chosen_item]:
+                #calculates how much more money you need to buy the item
+                difference = prices[chosen_item] - tears
+                broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
+                screen.blit(broke, (750, 100))
+                return
+            elif tears >= prices[chosen_item]:
                 #update money 
                 tears -= prices[chosen_item]
                 #add bought item to your inventory
                 inventory.append(chosen_item)
+                #Prevents code from updating tears and inventory for every iteration
+                run1 = False
         # Display what item the player bought
         purchase_complete = font.render(f'You have purchased {chosen_item}', True, white)
         #Print purchase message
         screen.blit(purchase_complete, (750, 100))
-        run1 = False
     return
     
 def display_money():
@@ -309,8 +310,6 @@ def display_question():
     chosen_question = trivia_questions[chosen_subject][difficulty]
     question = font.render(chosen_question, True, white)
     screen.blit(question, (750, 100))
-    cont = font.render("Once you've chosen, press RIGHT ARROW KEY", True, white)
-    screen.blit(cont, (800, 400))
     # depending on which question was chosen, it will display the answer choices
     ans_dict = science_easy
     if chosen_question == trivia_questions['Science']['Easy']:
@@ -330,6 +329,8 @@ def your_answer():
     global picked_an_ans
     global letter
     global ans_chosen
+    cont = font.render("Once you've chosen, press RIGHT ARROW KEY", True, white)
+    screen.blit(cont, (800, 400))
     if picked_an_ans == False:
         letter = ''
         ans_chosen = ''
@@ -358,15 +359,33 @@ def your_answer():
 def validate_answer():
     """Check if the player's trivia answer was correct and display corresponding message."""
     global ans_chosen
+    global ans_dict
+    global difficulty
+    global tears
+    global run1_trivia
+    # define the dictionary that corresponds with the chosen question
     ans_dict = display_question()
-    ans_chosen = your_answer()
+
+    #default tears earned for correct answer is 50 (easy)
+    tears_earned = 50
+    # for medium difficulty, 100 tears earned
+    if difficulty == 'Medium':
+        tears_earned = 100
+    # for hard difficulty, 200 tears earned
+    elif difficulty == 'Hard':
+        tears_earned = 200
+    
+    # check and display whether or not the answer was correct
     if ans_dict[ans_chosen] == 'correct':
-        correct_ans = font.render('You answered correctly!', True, white)
-        screen.blit(correct_ans, (750, 300))
+        correct_ans = font.render(f'You answered correctly! +{tears_earned} tears', True, white)
+        screen.blit(correct_ans, (800, 350))
+        # only add tears once
+        if run1_trivia == True:
+            tears += tears_earned
+            run1_trivia = False
     else:
         correct_ans = font.render('Your answer was incorrect.', True, white)
-        screen.blit(correct_ans, (750,300))
-
+        screen.blit(correct_ans, (800,350))
     return
 
 #START OF GAME CODE
@@ -398,6 +417,7 @@ while True:
         picked_an_ans = False
     if keys[pygame.K_RIGHT] and scene == 'question':
         scene = 'answered'
+        run1_trivia = True
     for event in pygame.event.get():
         #check if current event is a quit event
         if event.type == pygame.QUIT:
