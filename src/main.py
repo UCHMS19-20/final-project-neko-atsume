@@ -214,20 +214,23 @@ def display_money():
 trivia_topics = {
     '1': 'Science',
     '2': 'History',
-    '3': 'English',
-    '4': 'Technology',
-    '5': 'Health',
-    '6': 'Math'
+    '3': 'Health',
+    '4': 'Math'
 }
 #dictionary of all the topics and their questions for trivia minigame
 trivia_questions = {
     'Science': {'Easy': "What is Newton's Second Law?", 'Medium': "What is absolute zero in Celsius?", "Hard": 'Which of these is the Gibbs Free Energy equation?'},
     'History': {'Easy': 'Which country was not in World War 1?', 'Medium': "Who was the first US president to be impeached?", 'Hard': 'Who was the 5th President of the United States?'},
-    'English': {"Easy": "Which of these was not written by Shakespeare?", "Medium": "Which of these was not written by Ernest Hemingway?", 'Hard': 'Who murdered Jay Gatsby in The Great Gatsby?'},
-    'Technology': {"Easy": 'What does RAM stand for?', "Medium": 'What type of line is used to indicate symmetry?', "Hard": 'Which is not a type of gear?'},
     'Health': {'Easy': 'What does PPE stand for?', "Medium": "What's used to stop external bleeding?", "Hard": 'What is the depth of compression for infant CPR?'},
     'Math': {"Easy": "What is the formula for a parabola?", "Medium": "What is 0/0?", "Hard": 'What is the integral of dx/x?'}
 }
+
+#dictionary of answer choices for the trivia questions
+science_easy = {'A. Inertia': 'wrong', 'B. F=ma': 'correct', 'C. Equal/opposite forces': 'wrong', 'D. Conservation of energy': 'wrong'}
+science_med = {'A. 273': 'correct', 'B. 298': 'wrong', 'C. 225': 'wrong', 'D. 330': 'wrong'}
+science_hard = {'A. q=mcT': 'wrong', 'B. PV=nRT': 'wrong', 'C. v=dx/dt': 'wrong', 'D. G= H-TS': 'correct'}
+
+    
 
 def trivia_start():
     """Displays and initializes a trivia mini game for players to earn more money"""
@@ -280,17 +283,23 @@ def trivia_start():
         elif keys[pygame.K_4]:
             chosen_subject = trivia_topics['4']
             sub_picked = True
-        elif keys[pygame.K_5]:
-            chosen_subject = trivia_topics['5']
-            sub_picked = True
-        elif keys[pygame.K_6]:
-            chosen_subject = trivia_topics['6']
-            sub_picked = True
         if chosen_subject == '':
             return
     else:
         chosen_sub_text = font.render(f'You chose {chosen_subject}', True, white)
         screen.blit(chosen_sub_text, (750, 150))
+    return
+
+
+def print_answers(list):
+    """Print answer choices for the player to choose from"""
+    global difficulty
+    global chosen_subject
+    y_ans = 200
+    for ans_choice in list:
+        listed_ans = font.render(f'{ans_choice}', True, white)
+        screen.blit(listed_ans, (825, y_ans))
+        y_ans += 25
     return
 
 def display_question():
@@ -299,9 +308,66 @@ def display_question():
     global chosen_subject
     chosen_question = trivia_questions[chosen_subject][difficulty]
     question = font.render(chosen_question, True, white)
-    screen.blit(question, (750, 200))
-    return
+    screen.blit(question, (750, 100))
+    cont = font.render("Once you've chosen, press RIGHT ARROW KEY", True, white)
+    screen.blit(cont, (800, 400))
+    # depending on which question was chosen, it will display the answer choices
+    ans_dict = science_easy
+    if chosen_question == trivia_questions['Science']['Easy']:
+        print_answers(science_easy)
+        # defines which dictionary the answers come from
+        ans_dict = science_easy
+    elif chosen_question == trivia_questions['Science']['Medium']:
+        print_answers(science_med)
+        ans_dict = science_med
+    elif chosen_question == trivia_questions['Science']['Hard']:
+        print_answers(science_hard)
+        ans_dict = science_hard
+    return ans_dict
 
+def your_answer():
+    """Displays which answer the player picked"""
+    global picked_an_ans
+    global letter
+    global ans_chosen
+    if picked_an_ans == False:
+        letter = ''
+        ans_chosen = ''
+        if keys[pygame.K_a]:
+            letter = 'A'
+            # defines which option the player chose from the dictionary
+            ans_chosen = list(display_question())[0]
+            picked_an_ans = True
+        if keys[pygame.K_b]:
+            letter = 'B'
+            ans_chosen = list(display_question())[1]
+            picked_an_ans = True
+        if keys[pygame.K_c]:        
+            letter = 'C'
+            ans_chosen = list(display_question())[2]
+            picked_an_ans = True
+        if keys[pygame.K_d]:
+            letter = 'D'
+            ans_chosen = list(display_question())[3]
+            picked_an_ans = True
+    else:
+        display_your_ans = font.render(f'You answered: {letter}', True, white)
+        screen.blit(display_your_ans, (800, 350))
+    return ans_chosen
+
+def validate_answer():
+    """Check if the player's trivia answer was correct and display corresponding message."""
+    global ans_chosen
+    ans_dict = display_question()
+    ans_chosen = your_answer()
+    if ans_dict[ans_chosen] == 'correct':
+        correct_ans = font.render('You answered correctly!', True, white)
+        screen.blit(correct_ans, (750, 300))
+    else:
+        correct_ans = font.render('Your answer was incorrect.', True, white)
+        screen.blit(correct_ans, (750,300))
+
+    return
 
 #START OF GAME CODE
 scene = ''
@@ -312,7 +378,7 @@ while True:
     #Defines a variable relating to retrieving information about which keys are being pressed.
     keys = pygame.key.get_pressed()
     #if right arrow key is clicked, the shop opens.
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_RIGHT] and scene == 'clear':
         scene = 'shop'
         run1 = True
     #if space is pressed, the prompt screen clears text by drawing black over it
@@ -322,13 +388,16 @@ while True:
     if keys[pygame.K_RETURN] and scene == 'shop':
         scene = 'purchased'
     # Opens the trivia minigame to earn more money
-    if keys[pygame.K_t]:
+    if keys[pygame.K_t] and scene == 'clear':
         scene = 'start trivia'
         sub_picked = False
         picked_yet = False
     # Prints question and answers if a question is chosen from the trivia page
     if keys[pygame.K_RETURN] and scene == 'start trivia':
         scene = 'question'
+        picked_an_ans = False
+    if keys[pygame.K_RIGHT] and scene == 'question':
+        scene = 'answered'
     for event in pygame.event.get():
         #check if current event is a quit event
         if event.type == pygame.QUIT:
@@ -353,8 +422,12 @@ while True:
     if scene == 'start trivia':
         trivia_start()
     #gives player the trivia question and answers
-    #if scene == 'question':
-        #display_question()
+    if scene == 'question':
+        display_question()
+        your_answer()
+    #checks the player's trivia answer and updates money if correct
+    if scene == 'answered':
+        validate_answer()
     # Keep track of and display the amount of money available
     display_money()
     # Update display
