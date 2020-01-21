@@ -3,7 +3,7 @@ import pygame
 import time
 import random
 
-# figure out how to slow down pics and print ALL the collected teachers
+# fix fonts and font size, change tears back to 100
 
 #initialize pygame
 pygame.init()
@@ -17,7 +17,7 @@ white = pygame.Color(255, 255, 255)
 black = pygame.Color(0, 0, 0)
 
 # Create font object
-font = pygame.font.SysFont("Arial", 20)
+font = pygame.font.Font("MICKEY.TTF", 20)
 
 def draw_back():
     """Draws a background for the game"""
@@ -41,27 +41,22 @@ class Teachers:
         self.img = img
         self.x = x
         self.y = y
-    
-    def print_teachers(self):
-        """print out teachers that have been bought"""
-        teacher_to_print = pygame.image.load(f"{self.img}")
-        screen.blit(teacher_to_print, (self.x, self.y))
-        return
+
 
 #all the teachers available to collect. Cost is based on year that they teach. Retired teachers or teachers who no longer teach at UCVTS are more expensive.
 teachers = [
-    Teachers('Mrs. Gerstein', 'Robot', 30, 'src/img/gerstein2.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mr. Sanservino', 'Pop Quiz', 1000, 'src/img/sansi.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Dr. Fang', 'Free-Body Diagram', 300, 'src/img/fang.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mr. Weisser', 'Drum Set', 300, 'src/img/weisser.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mr. Stanko', 'AED', 300, 'src/img/stanko.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mr. Raite', 'Pure Oxygen', 300, 'src/img/raite.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mr. Nowakoski', 'Fancy Knife', 3000, 'src/img/nowakoski.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mr. McMenamin', 'Patrick Star Shorts', 2000, 'src/img/mcmenamin.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Ms. Valley', 'Deadlift', 200, 'src/img/valley.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Ms. Pinto', '35 Notecards', 200, 'src/img/pinto.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mrs. Kipp', 'AutoCAD Certificate', 3000, 'src/img/kipp.png', random.randint(20, 680), random.randint(20, 480)),
-    Teachers('Mr. Moskowitz', 'Open Position', 600, 'src/img/moskowitz.png', random.randint(20, 680), random.randint(20, 480))
+    Teachers('Mrs. Gerstein', 'Robot', 30, 'src/img/gerstein2.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Sanservino', 'Pop Quiz', 1000, 'src/img/sansi.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Dr. Fang', 'Free-Body Diagram', 300, 'src/img/fang.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Weisser', 'Drum Set', 300, 'src/img/weisser.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Stanko', 'AED', 300, 'src/img/stanko.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Raite', 'Pure Oxygen', 300, 'src/img/raite.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Nowakoski', 'Fancy Knife', 3000, 'src/img/nowakoski.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. McMenamin', 'Patrick Star Shorts', 2000, 'src/img/mcmenamin.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Ms. Valley', 'Deadlift', 200, 'src/img/valley.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Ms. Pinto', '35 Notecards', 200, 'src/img/pinto.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mrs. Kipp', 'AutoCAD Certificate', 3000, 'src/img/kipp.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Moskowitz', 'Open Position', 600, 'src/img/moskowitz.png', random.randint(50, 650), random.randint(50, 450))
 ]
 
 class Picker:
@@ -479,7 +474,7 @@ def teacher_arrival():
             teach_appeared = True
 
     # checks for all teachers
-    if num <= 10:
+    if num <= 10 and teach_appeared == False:
         num += 1
     return 
 
