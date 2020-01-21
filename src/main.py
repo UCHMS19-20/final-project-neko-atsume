@@ -3,7 +3,7 @@ import pygame
 import time
 import random
 
-#NEXT set up trivia and the teachers appearing.
+# figure out how to slow down pics and print ALL the collected teachers
 
 #initialize pygame
 pygame.init()
@@ -12,8 +12,7 @@ pygame.init()
 screen = pygame.display.set_mode( (1150, 500) )
 print(pygame.QUIT)
 
-
-# Create colors for text
+# Create colors for text and rect
 white = pygame.Color(255, 255, 255)
 black = pygame.Color(0, 0, 0)
 
@@ -32,7 +31,6 @@ def draw_back():
     pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
     return
 
-
 class Teachers:
     """class of all collectable teachers"""
     def __init__(self, name, goodie, cost, img):
@@ -42,25 +40,26 @@ class Teachers:
         self.cost = cost
         self.img = img
 
-#all the teachers available to collect. Cost is based on year that they teach, and rarity is based on if they're still teaching here or not.
+#all the teachers available to collect. Cost is based on year that they teach. Retired teachers or teachers who no longer teach at UCVTS are more expensive.
 teachers = [
     Teachers('Mrs. Gerstein', 'Robot', 30, 'src/img/gerstein2.png'),
-    Teachers('Mr. Sanservino', 'Pop Quiz', 2000, 'src/img/sansi.png'),
-    Teachers('Dr. Fang', 'Free-Body Diagram', 300, 'src/img/gerstein2.png'),
-    Teachers('Mr. Weisser', 'Drum Set', 300, 'src/img/gerstein2.png'),
-    Teachers('Mr. Stanko', 'AED', 300, 'src/img/gerstein2.png'),
-    Teachers('Mr. Raite', 'Pure Oxygen', 300, 'src/img/gerstein2.png'),
-    Teachers('Mr. Nowakoski', 'Fancy Knife', 8000, 'src/img/gerstein2.png'),
-    Teachers('Mr. McMenamin', 'Patrick Star Shorts', 7000, 'src/img/gerstein2.png'),
-    Teachers('Ms. Valley', 'Deadlift', 200, 'src/img/gerstein2.png'),
-    Teachers('Ms. Pinto', '35 Notecards', 200, 'src/img/gerstein2.png'),
-    Teachers('Mrs. Kipp', 'AutoCAD Certificate', 8000, 'src/img/gerstein2.png'),
-    Teachers('Mr. Moskowitz', 'Open Position', 600, 'src/img/gerstein2.png')
+    Teachers('Mr. Sanservino', 'Pop Quiz', 1000, 'src/img/sansi.png'),
+    Teachers('Dr. Fang', 'Free-Body Diagram', 300, 'src/img/fang.png'),
+    Teachers('Mr. Weisser', 'Drum Set', 300, 'src/img/weisser.png'),
+    Teachers('Mr. Stanko', 'AED', 300, 'src/img/stanko.png'),
+    Teachers('Mr. Raite', 'Pure Oxygen', 300, 'src/img/raite.png'),
+    Teachers('Mr. Nowakoski', 'Fancy Knife', 3000, 'src/img/nowakoski.png'),
+    Teachers('Mr. McMenamin', 'Patrick Star Shorts', 2000, 'src/img/mcmenamin.png'),
+    Teachers('Ms. Valley', 'Deadlift', 200, 'src/img/valley.png'),
+    Teachers('Ms. Pinto', '35 Notecards', 200, 'src/img/pinto.png'),
+    Teachers('Mrs. Kipp', 'AutoCAD Certificate', 3000, 'src/img/kipp.png'),
+    Teachers('Mr. Moskowitz', 'Open Position', 600, 'src/img/moskowitz.png')
 ]
 
 class Picker:
     """Draw and move the picker in the shop""" 
     
+    # constructor for Picker class
     def __init__(self, index=0):
         self.y = 80
         self.index = index
@@ -104,8 +103,7 @@ def welcome():
     pygame.display.flip()
     return
 
-
-# Establishes the shop as a dictionary. Lists name of item and cost.
+# Establishes the shop as a dictionary. Lists name of item and cost. Cost of goodies is higher if the corresponding teacher has left the district. The rest is arbitrary.
 prices = {
     'Robot': 15,
     'Pop Quiz': 200,
@@ -113,11 +111,11 @@ prices = {
     'Drum Set': 20,
     'AED': 15,
     'Pure Oxygen': 70,
-    'Fancy Knife': 400,
-    'Patrick Star Shorts': 400,
+    'Fancy Knife': 300,
+    'Patrick Star Shorts': 300,
     'Deadlift': 30,
     '35 Notecards': 30,
-    'AutoCAD Certificate': 500,
+    'AutoCAD Certificate': 400,
     'Open Position': 80
 }
 
@@ -162,16 +160,18 @@ sidebar = {
     "width": 450
 }
 
+# define picker
 picker = font.render('>', True, white)
 
+# create picker object
 picker1=Picker()
 
+
 # Sets base (initial) money value at 500. Currency is tears.
-tears = 100
+tears = 10000
 
 #blank list to keep track of purchased items
 inventory = []
-
 
 def purchase():
     """Allows the player to purchase items in the shop"""
@@ -185,6 +185,7 @@ def purchase():
         screen.blit(already_have, (750, 100))
 
     else:
+        # transaction proceeds only if they have not paid yet
         if run1 == True:
             if tears < prices[chosen_item]:
                 #calculates how much more money you need to buy the item
@@ -192,6 +193,7 @@ def purchase():
                 broke = font.render(f'Sorry, you are short {difference} tears.', True, white)
                 screen.blit(broke, (750, 100))
                 return
+            # if there's enough money and you have not paid yet, the price is deducted and item is added to your inventory
             elif tears >= prices[chosen_item]:
                 #update money 
                 tears -= prices[chosen_item]
@@ -219,6 +221,7 @@ trivia_topics = {
     '3': 'Health',
     '4': 'Math'
 }
+
 #dictionary of all the topics and their questions for trivia minigame
 trivia_questions = {
     'Science': {'Easy': "What is Newton's Second Law?", 'Medium': "What is absolute zero in Celsius?", "Hard": 'Which of these is the Gibbs Free Energy equation?'},
@@ -232,7 +235,7 @@ science_easy = {'A. Inertia': 'wrong', 'B. F=ma': 'correct', 'C. Equal/opposite 
 science_med = {'A. 273': 'correct', 'B. 298': 'wrong', 'C. 225': 'wrong', 'D. 330': 'wrong'}
 science_hard = {'A. q=mcT': 'wrong', 'B. PV=nRT': 'wrong', 'C. v=dx/dt': 'wrong', 'D. G= H-TS': 'correct'}
 history_easy = {'A. USA': 'wrong', 'B. Germany': 'wrong', 'C. Spain': 'correct', 'D. Austro-Hungary': 'wrong'}
-history_med = {'A. Richard Nixon': 'wrong', 'B. Andrew Johnson': 'correct', 'C. Bill Clinton': 'wrong', 'Donald Trump': 'wrong'}
+history_med = {'A. Richard Nixon': 'wrong', 'B. Andrew Johnson': 'correct', 'C. Bill Clinton': 'wrong', 'D. Donald Trump': 'wrong'}
 history_hard = {'A. John Quincy Adams': 'wrong', 'B. James Madison': 'wrong', 'C. Martin Van Buren': 'wrong', 'D. James Monroe': 'correct'}
 health_easy = {'A. Personal Protective Equipment': 'correct', 'B. Private Protective Equipment': 'wrong', 'C. Private Political Endorsement': 'wrong', 'D. Pressure Point Equilibrium': 'wrong'}
 health_med = {'A. Ice': 'wrong', 'B. Tourniquet': 'correct', 'C. Splint': 'wrong', 'D. CPR': 'wrong'}
@@ -248,16 +251,21 @@ def trivia_start():
     global difficulty
     global sub_picked
     global chosen_subject
+    #prints directions
     trivia_directions = font.render('Answer questions to earn more tears!', True, white)
     screen.blit(trivia_directions, (750, 50))
+    # default height is 200
     y_triv = 200
+    # prints all the subject options for the trivia game
     for number, subject in trivia_topics.items():
         trivia_options = font.render(f'{number}: {subject}', True, white)
         screen.blit(trivia_options, (750, y_triv))
+        # options spaced out 25 pixels vertically
         y_triv += 25
     
     cont = font.render("Once you've chosen, press enter", True, white)
     screen.blit(cont, (750, 400))
+    # if player has not picked a difficulty yet, they may pick. 
     if picked_yet == False:
         difficulty = ''
         pick_difficulty = font.render('Choose difficulty level: Easy (E), Medium (M), or Hard (H)', True, white)
@@ -273,13 +281,16 @@ def trivia_start():
             picked_yet = True
         if difficulty == '':
             return
+    # if they have chosen, it prints their choice
     else:
         chosen_difficulty = font.render(f'Difficulty Level: {difficulty}', True, white)
         screen.blit(chosen_difficulty, (750, 80))
 
+    # if player has not yet picked a subject, they may
     if sub_picked == False:
         select_prompt = font.render('Pick your question.', True, white)
         screen.blit(select_prompt, (750, 150))
+        # default subject is blank string
         chosen_subject = ''
         if keys[pygame.K_1]:
             chosen_subject = trivia_topics['1']
@@ -293,22 +304,26 @@ def trivia_start():
         elif keys[pygame.K_4]:
             chosen_subject = trivia_topics['4']
             sub_picked = True
+        # if they haven't chosen and the variable is still a blank string, exit function
         if chosen_subject == '':
             return
+    # if they've chosen a subject, display subject
     else:
         chosen_sub_text = font.render(f'You chose {chosen_subject}', True, white)
         screen.blit(chosen_sub_text, (750, 150))
     return
 
-
 def print_answers(list):
     """Print answer choices for the player to choose from"""
     global difficulty
     global chosen_subject
+    # answer choices begin printing at height 200
     y_ans = 200
+    # lists every answer choice in the appropriate list
     for ans_choice in list:
         listed_ans = font.render(f'{ans_choice}', True, white)
         screen.blit(listed_ans, (825, y_ans))
+        # answer choices are spaced out 25 pixels vertically
         y_ans += 25
     return
 
@@ -316,14 +331,17 @@ def display_question():
     """Display question and answer choices for trivia mini game"""
     global difficulty
     global chosen_subject
+    # define the chosen question by referencing the questions nested dictionary
     chosen_question = trivia_questions[chosen_subject][difficulty]
+    # print question
     question = font.render(chosen_question, True, white)
     screen.blit(question, (750, 100))
     # depending on which question was chosen, it will display the answer choices
+    # default answer dictionary is science easy 
     ans_dict = science_easy
     if chosen_question == trivia_questions['Science']['Easy']:
         print_answers(science_easy)
-        # defines which dictionary the answers come from
+        # defines which dictionary the answers come from. This one is not necessary because it is the default dictionary, but I've included it as an example of the format.
         ans_dict = science_easy
     elif chosen_question == trivia_questions['Science']['Medium']:
         print_answers(science_med)
@@ -358,6 +376,7 @@ def display_question():
     elif chosen_question == trivia_questions['Math']['Hard']:
         print_answers(math_hard)
         ans_dict = math_hard
+    # function returns whichever answer dictionary was used for reference in other trivia functions
     return ans_dict
 
 def your_answer():
@@ -367,13 +386,16 @@ def your_answer():
     global ans_chosen
     cont = font.render("Once you've chosen, press RIGHT ARROW KEY", True, white)
     screen.blit(cont, (800, 400))
+    # only runs if the player has not yet chosen an answer. Allows player to only select their answer once, not repeatedly
     if picked_an_ans == False:
+        # blank strings as placeholders for the letter chosen and the full answer that was chosen
         letter = ''
         ans_chosen = ''
         if keys[pygame.K_a]:
             letter = 'A'
             # defines which option the player chose from the dictionary
             ans_chosen = list(display_question())[0]
+            # player has now picked an answer, and will not have to pick again
             picked_an_ans = True
         if keys[pygame.K_b]:
             letter = 'B'
@@ -388,6 +410,7 @@ def your_answer():
             ans_chosen = list(display_question())[3]
             picked_an_ans = True
     else:
+        #once they've picked an answer, the answer is displayed
         display_your_ans = font.render(f'You answered: {letter}', True, white)
         screen.blit(display_your_ans, (800, 350))
     return ans_chosen
@@ -424,6 +447,7 @@ def validate_answer():
         screen.blit(correct_ans, (800,350))
     return
 
+# blank list for all the teachers that have been collected by the player
 teachers_bought = []
 
 def teacher_arrival():
@@ -438,12 +462,14 @@ def teacher_arrival():
             screen.blit(teach_img, (300, 100))
             arrived = font.render('A teacher has arrived!', True, white)
             screen.blit(arrived, (750, 50))
+            # refer to the cost of each teacher
             teach_price = teachers[num].cost
             buy_teacher = font.render(f'Would you like to collect this teacher for {teach_price} tears?', True, white)
             screen.blit(buy_teacher, (750, 100))
             yes_no = font.render('Y/N', True, white)
             screen.blit(yes_no, (915, 130))
             teach_appeared = True
+    # returns True if a goodie has attracted a teacher who has not been collected yet
     if teach_appeared == True:
         return True
     # checks for all teachers
@@ -456,52 +482,122 @@ def teacher_stay():
     global num
     global paid
     global tears
+    global clicked_yes
+    global clicked_no
+    #reference the price of each teacher
     teach_price = teachers[num].cost
-    diff2 = teach_price - tears
-    if keys[pygame.K_y] and paid == False:
-        if tears < teach_price:
-            cant_buy = font.render(f'Sorry, you are short {diff2} tears.', True, white)
-            screen.blit(cant_buy, (750,100))
-            return
-        tears -= teach_price
-        # it will only deduct money once when you buy a teacher
-        paid = True
-        # adds teacher's name to the bought list
-        teachers_bought.append(teachers[num].name)
+    if keys[pygame.K_y]:
+        clicked_yes = True
+    # clicking yes will trigger the transaction
+    if clicked_yes == True:
+        #make sure this only happens while the money has not yet been deducted
+        if paid == False:
+            # if the player doesn't have enough money, it exits the function
+            if check_money() == False:
+                return
+            # deduct price of teacher
+            tears -= teach_price
+            # it will only deduct money once when you buy a teacher
+            paid = True
+            # adds teacher's name to the bought list
+            teachers_bought.append(teachers[num].name)
     elif keys[pygame.K_n] and paid == False:
-        return
+        clicked_no = True
+    # if the player has clicked no, the screen will clear
+    if clicked_no == True:
+        pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
+    # only prints if the player has paid for the teacher to stay
     if paid == True:
         receipt = font.render(f'You have collected {teachers[num].name}!', True, white)
         screen.blit(receipt, (750, 100))
     return
 
+def check_money():
+    """Checks whether or not the player has enough tears to pay for the teacher to stay"""
+    global tears
+    global num
+    #reference the price of each teacher
+    teach_price = teachers[num].cost
+    #define how many more tears you need to buy the teacher
+    diff2 = teach_price - tears
+    if tears < teach_price:
+        too_poor = font.render(f"Sorry, you're short {diff2} tears.", True, white)
+        screen.blit(too_poor, (800, 200))
+        try_trivia = font.render("Answer some questions to earn more tears! (press T to access)", True, white)
+        screen.blit(try_trivia, (730, 230))
+        return False
+    return True
+
+
 def print_teachers():
     """Displays all the teachers who have been collected thus far"""
-    global num
-    x = random.randint(10, 690)
-    y = random.randint(10, 490)
+    #assigns random x and y values for the teachers so they move around
+    x = random.randint(20, 680)
+    y = random.randint(20, 480)
     for teacher in teachers_bought:
-        teach_img = pygame.image.load(teachers[num].img)
-        screen.blit(teach_img, (x, y))
+        if teacher == teachers[0].name:
+            teach_img = pygame.image.load(teachers[0].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[1].name:
+            teach_img = pygame.image.load(teachers[1].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[2].name:
+            teach_img = pygame.image.load(teachers[2].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[3].name:
+            teach_img = pygame.image.load(teachers[3].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[4].name:
+            teach_img = pygame.image.load(teachers[4].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[5].name:
+            teach_img = pygame.image.load(teachers[5].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[6].name:
+            teach_img = pygame.image.load(teachers[6].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[7].name:
+            teach_img = pygame.image.load(teachers[7].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[8].name:
+            teach_img = pygame.image.load(teachers[8].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[9].name:
+            teach_img = pygame.image.load(teachers[9].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[10].name:
+            teach_img = pygame.image.load(teachers[10].img)
+            screen.blit(teach_img, (x, y))
+        if teacher == teachers[11].name:
+            teach_img = pygame.image.load(teachers[11].img)
+            screen.blit(teach_img, (x, y))
+        
     return
-#START OF GAME CODE
-scene = ''
 
+
+
+#START OF GAME CODE
+# default scene brings up welcome screen when you first open the game
+scene = ''
 
 # Main loop for game
 while True:
     #Defines a variable relating to retrieving information about which keys are being pressed.
     keys = pygame.key.get_pressed()
     #if right arrow key is clicked, the shop opens.
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_RIGHT] and scene == 'clear':
         scene = 'shop'
         run1 = True
     #if space is pressed, the prompt screen clears text by drawing black over it
     if keys[pygame.K_SPACE]:
         scene = 'clear'
+        # clearing the screen also triggers the event of a teacher appearing. The following 5 lines define variables pertaining to those functions.
         num = 0
+        # these booleans ensure that certain events within a function only happen once, not every iteration
         paid = False
         teach_appeared = False
+        clicked_yes = False
+        clicked_no = False
     # Triggers the purchase screen after item is selected in the shop.
     if keys[pygame.K_RETURN] and scene == 'shop':
         scene = 'purchased'
@@ -514,6 +610,7 @@ while True:
     if keys[pygame.K_RETURN] and scene == 'start trivia':
         scene = 'question'
         picked_an_ans = False
+    # Checks answer to trivia question if right key is pressed while on the question screen
     if keys[pygame.K_RIGHT] and scene == 'question':
         scene = 'answered'
         run1_trivia = True
@@ -537,7 +634,9 @@ while True:
     if scene == 'clear':
         #draws over the sidebar
         pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
+        # whenever the screen is cleared, it checks for teacher arrival
         teacher_arrival()
+        # you may only collect a teacher if a teacher has arrived
         if teacher_arrival() == True:
             teacher_stay()
     #starts trivia minigame
