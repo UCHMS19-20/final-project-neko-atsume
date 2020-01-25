@@ -3,8 +3,6 @@ import pygame
 import time
 import random
 
-# fix fonts and font size, change tears back to 100
-
 #initialize pygame
 pygame.init()
 
@@ -17,7 +15,7 @@ white = pygame.Color(255, 255, 255)
 black = pygame.Color(0, 0, 0)
 
 # Create font object
-font = pygame.font.Font("MICKEY.TTF", 20)
+font = pygame.font.Font("Subscribe.TTF", 20)
 
 def draw_back():
     """Draws a background for the game"""
@@ -41,7 +39,6 @@ class Teachers:
         self.img = img
         self.x = x
         self.y = y
-
 
 #all the teachers available to collect. Cost is based on year that they teach. Retired teachers or teachers who no longer teach at UCVTS are more expensive.
 teachers = [
@@ -171,7 +168,7 @@ picker1=Picker()
 
 
 # Sets base (initial) money value at 500. Currency is tears.
-tears = 10000
+tears = 500
 
 #blank list to keep track of purchased items
 inventory = []
@@ -271,8 +268,8 @@ def trivia_start():
     # if player has not picked a difficulty yet, they may pick. 
     if picked_yet == False:
         difficulty = ''
-        pick_difficulty = font.render('Choose difficulty level: Easy (E), Medium (M), or Hard (H)', True, white)
-        screen.blit(pick_difficulty, (750, 80))
+        pick_difficulty = font.render('Choose difficulty level: Easy (E), Medium (M), Hard (H)', True, white)
+        screen.blit(pick_difficulty, (730, 80))
         if keys[pygame.K_e]:
             difficulty = 'Easy'
             picked_yet = True
@@ -388,7 +385,7 @@ def your_answer():
     global letter
     global ans_chosen
     cont = font.render("Once you've chosen, press RIGHT ARROW KEY", True, white)
-    screen.blit(cont, (800, 400))
+    screen.blit(cont, (775, 400))
     # only runs if the player has not yet chosen an answer. Allows player to only select their answer once, not repeatedly
     if picked_an_ans == False:
         # blank strings as placeholders for the letter chosen and the full answer that was chosen
@@ -440,7 +437,7 @@ def validate_answer():
     # check and display whether or not the answer was correct
     if ans_dict[ans_chosen] == 'correct':
         correct_ans = font.render(f'You answered correctly! +{tears_earned} tears', True, white)
-        screen.blit(correct_ans, (800, 350))
+        screen.blit(correct_ans, (775, 350))
         # only add tears once
         if run1_trivia == True:
             tears += tears_earned
@@ -468,7 +465,7 @@ def teacher_arrival():
             # refer to the cost of each teacher
             teach_price = teachers[num].cost
             buy_teacher = font.render(f'Would you like to collect this teacher for {teach_price} tears?', True, white)
-            screen.blit(buy_teacher, (750, 100))
+            screen.blit(buy_teacher, (730, 100))
             yes_no = font.render('Y/N', True, white)
             screen.blit(yes_no, (915, 130))
             teach_appeared = True
@@ -524,11 +521,10 @@ def check_money():
     if tears < teach_price:
         too_poor = font.render(f"Sorry, you're short {diff2} tears.", True, white)
         screen.blit(too_poor, (800, 200))
-        try_trivia = font.render("Answer some questions to earn more tears! (press T to access)", True, white)
+        try_trivia = font.render("Answer some questions to earn more tears! (press T)", True, white)
         screen.blit(try_trivia, (730, 230))
         return False
     return True
-
 
 def display_teachers():
     """Displays all the teachers who have been collected thus far"""
@@ -547,11 +543,11 @@ scene = ''
 while True:
     #Defines a variable relating to retrieving information about which keys are being pressed.
     keys = pygame.key.get_pressed()
-    #if right arrow key is clicked, the shop opens.
+    #quit game by clicking escape
     if keys[pygame.K_ESCAPE]:
         pygame.quit()
         quit()
-
+    #if right arrow key is clicked, the shop opens.
     if keys[pygame.K_RIGHT] and scene == 'clear':
         scene = 'shop'
         run1 = True
