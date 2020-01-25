@@ -3,7 +3,7 @@ import pygame
 import time
 import random
 
-# figure out how to slow down pics and print ALL the collected teachers
+# fix fonts and font size, change tears back to 100
 
 #initialize pygame
 pygame.init()
@@ -17,7 +17,7 @@ white = pygame.Color(255, 255, 255)
 black = pygame.Color(0, 0, 0)
 
 # Create font object
-font = pygame.font.SysFont("Arial", 20)
+font = pygame.font.Font("MICKEY.TTF", 20)
 
 def draw_back():
     """Draws a background for the game"""
@@ -33,27 +33,30 @@ def draw_back():
 
 class Teachers:
     """class of all collectable teachers"""
-    def __init__(self, name, goodie, cost, img):
+    def __init__(self, name, goodie, cost, img, x, y):
         """constructor for Teachers"""
         self.name = name
         self.goodie = goodie
         self.cost = cost
         self.img = img
+        self.x = x
+        self.y = y
+
 
 #all the teachers available to collect. Cost is based on year that they teach. Retired teachers or teachers who no longer teach at UCVTS are more expensive.
 teachers = [
-    Teachers('Mrs. Gerstein', 'Robot', 30, 'src/img/gerstein2.png'),
-    Teachers('Mr. Sanservino', 'Pop Quiz', 1000, 'src/img/sansi.png'),
-    Teachers('Dr. Fang', 'Free-Body Diagram', 300, 'src/img/fang.png'),
-    Teachers('Mr. Weisser', 'Drum Set', 300, 'src/img/weisser.png'),
-    Teachers('Mr. Stanko', 'AED', 300, 'src/img/stanko.png'),
-    Teachers('Mr. Raite', 'Pure Oxygen', 300, 'src/img/raite.png'),
-    Teachers('Mr. Nowakoski', 'Fancy Knife', 3000, 'src/img/nowakoski.png'),
-    Teachers('Mr. McMenamin', 'Patrick Star Shorts', 2000, 'src/img/mcmenamin.png'),
-    Teachers('Ms. Valley', 'Deadlift', 200, 'src/img/valley.png'),
-    Teachers('Ms. Pinto', '35 Notecards', 200, 'src/img/pinto.png'),
-    Teachers('Mrs. Kipp', 'AutoCAD Certificate', 3000, 'src/img/kipp.png'),
-    Teachers('Mr. Moskowitz', 'Open Position', 600, 'src/img/moskowitz.png')
+    Teachers('Mrs. Gerstein', 'Robot', 30, 'src/img/gerstein2.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Sanservino', 'Pop Quiz', 1000, 'src/img/sansi.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Dr. Fang', 'Free-Body Diagram', 300, 'src/img/fang.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Weisser', 'Drum Set', 300, 'src/img/weisser.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Stanko', 'AED', 300, 'src/img/stanko.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Raite', 'Pure Oxygen', 300, 'src/img/raite.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Nowakoski', 'Fancy Knife', 3000, 'src/img/nowakoski.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. McMenamin', 'Patrick Star Shorts', 2000, 'src/img/mcmenamin.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Ms. Valley', 'Deadlift', 200, 'src/img/valley.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Ms. Pinto', '35 Notecards', 200, 'src/img/pinto.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mrs. Kipp', 'AutoCAD Certificate', 3000, 'src/img/kipp.png', random.randint(50, 650), random.randint(50, 450)),
+    Teachers('Mr. Moskowitz', 'Open Position', 600, 'src/img/moskowitz.png', random.randint(50, 650), random.randint(50, 450))
 ]
 
 class Picker:
@@ -455,7 +458,7 @@ def teacher_arrival():
     global num
     global teach_appeared
     # checks if teacher has been purchased already
-    if teachers[num].name not in teachers_bought:
+    if teachers[num] not in teachers_bought:
         #checks if that teacher's goodie is bought
         if teachers[num].goodie in inventory:
             teach_img = pygame.image.load(teachers[num].img)
@@ -469,13 +472,11 @@ def teacher_arrival():
             yes_no = font.render('Y/N', True, white)
             screen.blit(yes_no, (915, 130))
             teach_appeared = True
-    # returns True if a goodie has attracted a teacher who has not been collected yet
-    if teach_appeared == True:
-        return True
+
     # checks for all teachers
-    if num <= 10:
+    if num <= 10 and teach_appeared == False:
         num += 1
-    return False
+    return 
 
 def teacher_stay():
     """If the player decides to buy and keep the teacher, they will be printed every frame"""
@@ -500,7 +501,7 @@ def teacher_stay():
             # it will only deduct money once when you buy a teacher
             paid = True
             # adds teacher's name to the bought list
-            teachers_bought.append(teachers[num].name)
+            teachers_bought.append(teachers[num])
     elif keys[pygame.K_n] and paid == False:
         clicked_no = True
     # if the player has clicked no, the screen will clear
@@ -529,49 +530,11 @@ def check_money():
     return True
 
 
-def print_teachers():
+def display_teachers():
     """Displays all the teachers who have been collected thus far"""
-    #assigns random x and y values for the teachers so they move around
-    x = random.randint(20, 680)
-    y = random.randint(20, 480)
     for teacher in teachers_bought:
-        if teacher == teachers[0].name:
-            teach_img = pygame.image.load(teachers[0].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[1].name:
-            teach_img = pygame.image.load(teachers[1].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[2].name:
-            teach_img = pygame.image.load(teachers[2].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[3].name:
-            teach_img = pygame.image.load(teachers[3].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[4].name:
-            teach_img = pygame.image.load(teachers[4].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[5].name:
-            teach_img = pygame.image.load(teachers[5].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[6].name:
-            teach_img = pygame.image.load(teachers[6].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[7].name:
-            teach_img = pygame.image.load(teachers[7].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[8].name:
-            teach_img = pygame.image.load(teachers[8].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[9].name:
-            teach_img = pygame.image.load(teachers[9].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[10].name:
-            teach_img = pygame.image.load(teachers[10].img)
-            screen.blit(teach_img, (x, y))
-        if teacher == teachers[11].name:
-            teach_img = pygame.image.load(teachers[11].img)
-            screen.blit(teach_img, (x, y))
-        
+        teach_face = pygame.image.load(f"{teacher.img}")
+        screen.blit(teach_face, (teacher.x, teacher.y))
     return
 
 
@@ -585,6 +548,10 @@ while True:
     #Defines a variable relating to retrieving information about which keys are being pressed.
     keys = pygame.key.get_pressed()
     #if right arrow key is clicked, the shop opens.
+    if keys[pygame.K_ESCAPE]:
+        pygame.quit()
+        quit()
+
     if keys[pygame.K_RIGHT] and scene == 'clear':
         scene = 'shop'
         run1 = True
@@ -632,12 +599,10 @@ while True:
         purchase()
     # Clears the text box on the right.
     if scene == 'clear':
-        #draws over the sidebar
-        pygame.draw.rect(screen, black, (sidebar["x"], sidebar["y"], sidebar["width"], sidebar["height"]))
         # whenever the screen is cleared, it checks for teacher arrival
         teacher_arrival()
         # you may only collect a teacher if a teacher has arrived
-        if teacher_arrival() == True:
+        if teach_appeared == True:
             teacher_stay()
     #starts trivia minigame
     if scene == 'start trivia':
@@ -652,6 +617,6 @@ while True:
     # Keep track of and display the amount of money available
     display_money()
     # print all teachers that have been collected
-    print_teachers()
+    display_teachers()
     # Update display
     pygame.display.flip()
