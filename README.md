@@ -25,5 +25,5 @@ The Daily Beast. “25 Best High Schools in the Northeast.” The Daily Beast,
 
 ## Links
 
-* [Flowchart](https://drive.google.com/file/d/1U3DHaGCXGhhNCBJNKSd_bv0rJw22cLsB/view)
+* [Flowchart](https://drive.google.com/file/d/1X79PkJ8Bynffbtz1eTua7eWLgOnK0Ai_/view?usp=sharing)
 * [Presentation](https://docs.google.com/presentation/d/1wY5EsaHC_lkkUOa5XCd8910cp6xu8yyW_ucyy2mZ_ec/edit?usp=sharing)
